@@ -1,0 +1,18 @@
+{
+  "name": "match-detector",
+  "version": "1.0.0",
+  "description": "Match strings to \"detect subjects\"",
+  "main": "dist/index.js",
+  "repository": "https://github.com/Greensky-gs/match-detector",
+  "author": "Greensky-gs <72513011+Greensky-gs@users.noreply.github.com>",
+  "license": "MIT",
+  "dependencies": {
+    "easy-json-database": "^1.5.0",
+    "string-similarity": "^4.0.4"
+  },
+  "devDependencies": {
+    "prettier": "^2.7.1",
+    "tsc": "^2.0.4",
+    "typescript": "^4.9.3"
+  }
+}
