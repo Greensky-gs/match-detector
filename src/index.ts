@@ -1,0 +1,1 @@
+export { MatchDetector } from './structures/Matcher';
