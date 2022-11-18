@@ -1,5 +1,6 @@
 import Database from "easy-json-database"
 import { findBestMatch } from "string-similarity";
+import { power } from "../typings/options";
 
 export class MatchDetector {
     private database: Database;
@@ -7,7 +8,7 @@ export class MatchDetector {
     constructor(databasePath: string) {
         this.database = new Database(databasePath);
     }
-    public addElement({ power, word }: { power: number; word: string; }) {
+    public addElement({ power, word }: { power: power; word: string; }) {
         if (this.database.has(word)) return false;
 
         this.database.set(word, power);
@@ -19,11 +20,11 @@ export class MatchDetector {
         this.database.delete(word);
         return true;
     }
-    public get elements(): { word: string; power: number }[] {
-        return this.database.all().map(x => ({ word: x.key, power: x.data as number }));
+    public get elements(): { word: string; power: power }[] {
+        return this.database.all().map(x => ({ word: x.key, power: x.data as power }));
     }
     public test(text: string) {
-        const includes: {key: string, data: number;}[] = this.database.all().filter(x => text.includes(x.key)).map(x => ({ key: x.key, data: parseInt(x.data as string) }));
+        const includes: {key: string, data: power;}[] = this.database.all().filter(x => text.includes(x.key)).map(x => ({ key: x.key, data: parseInt(x.data as string) as power }));
     
         const percent = includes.length * 100 / text.split(/ +/g).length;
         if (percent >= this.getPercentageByStringLength(text.length)) return true;
@@ -31,7 +32,7 @@ export class MatchDetector {
         const highestPower = includes.sort((a, b) => a.data - b.data)[0].data;
         if (includes.filter(x => x.data === highestPower).length * 100 / includes.length >= 60 && highestPower > 5) return true;
     
-        if (includes.map(x => x.data).reduce((a, b) => a + b) >= 4 * includes.length) return true;
+        if (includes.map(x => x.data).sort((a, b) => a + b)[0] >= 4 * includes.length) return true;
         let matches = 0;
         for (const item of text.split(/ +/g)) {
             if (findBestMatch(item, includes.map(x => x.key)).bestMatch.rating > 0.6) matches++;
